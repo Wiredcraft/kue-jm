@@ -1,0 +1,3 @@
+describe('Redis Factory', () => {
+
+});
