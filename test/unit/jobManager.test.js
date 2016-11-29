@@ -1,7 +1,7 @@
 'use strict';
 
 const expect = require('expect');
-const uuid = require('node-uuid');
+const uuid = require('uuid');
 const delay = require('delay');
 const sinon = require('sinon');
 // const testQ = require('kue').createQueue();
@@ -95,6 +95,83 @@ describe('Job Manager', () => {
         const tasks = [{ name: 'task1' }];
         expect(() => jm.addTasks('notExist', tasks)).toThrow(Error);
       });
+    });
+  });
+
+  describe('#GETTASKSTATUS', () => {
+    afterEach(() => {
+      return jm.job._db.flushdb();
+    });
+
+    it('should not store task info if it was completed', () => {
+      const jobType = 'GETTASKSTATUS1';
+      const tasks = [
+        {
+          name: 'ipsum',
+          ttl: 5000,
+          retry: 4,
+          path: '../test/fixture/task1',
+          param: { foo: 'bar' },
+        },
+        {
+          name: 'lorem',
+          ttl: 10000,
+          retry: 2,
+          path: '../test/fixture/task2',
+          param: { baz: 'qux' },
+        },
+      ];
+      const id = uuid.v4();
+      return jm.addJob(jobType, { id }, tasks)
+        .then(() => jm.run(jobType))
+        .then(() => delay(1000))
+        .then(() => jm.getTaskStatus(jobType, id))
+        .then((ret) => {
+          // for task which completed successfully
+          // the infomation will be removed from redis `jm.job._db`
+          expect(Object.keys(ret[0]).length).toEqual(0);
+          expect(Object.keys(ret[1]).length).toEqual(0);
+        });
+    });
+
+    it('should store task error info if it was failed', () => {
+      const jobType = 'GETTASKSTATUS2';
+      const tasks = [
+        {
+          name: 'ipsum',
+          ttl: 5000,
+          retry: 4,
+          path: '../test/fixture/task1',
+          param: { foo: 'bar' },
+        },
+        {
+          name: 'lorem',
+          ttl: 10000,
+          retry: 2,
+          path: '../test/fixture/exceptionTask1',
+          param: { baz: 'qux' },
+        },
+        {
+          name: 'ipsum',
+          ttl: 5000,
+          retry: 4,
+          path: '../test/fixture/task2',
+          param: { foo: 'bar' },
+        },
+      ];
+      const id = uuid.v4();
+      return jm.addJob(jobType, { id }, tasks)
+        .then(() => jm.run(jobType))
+        .then(() => delay(1000))
+        .then(() => jm.getTaskStatus(jobType, id))
+        .then((ret) => {
+          expect(ret[0].status).toEqual('complete');
+          expect(ret[0].result).toEqual('bar');
+          expect(ret[1].status).toEqual('failed');
+          expect(ret[1].error).toEqual('This is an error message');
+          // prop `status` will not be added if the task was not being executed
+          expect(ret[2].status).toEqual(undefined);
+        });
     });
   });
 
