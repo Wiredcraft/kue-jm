@@ -1,0 +1,31 @@
+{
+  "extends": "airbnb",
+  "installedESLint": true,
+  "plugins": [
+    "react",
+    "jsx-a11y",
+    "import"
+  ],
+  "env": {
+    "node": true,
+    "es6": true,
+    "mocha": true
+  },
+  "rules": {
+    "curly": [
+      "warn",
+      "all"
+    ],
+    "no-underscore-dangle": "off",
+    "no-shadow": "off",
+    "no-plusplus": "off",
+    "arrow-body-style": "off",
+    "import/no-extraneous-dependencies": "off",
+    "no-param-reassign": "off",
+    "global-require": "off",
+    "class-methods-use-this": "off",
+    "consistent-return": "off",
+    "no-unused-expressions": "off",
+    "strict": "off"
+  }
+}

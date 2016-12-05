@@ -7,10 +7,10 @@ const sinon = require('sinon');
 // const testQ = require('kue').createQueue();
 const JM = require('../../lib/jobManager');
 const Series = require('../../lib/taskSeries');
-const config = require('../configWithSentinel');
+const config = require('../config');
 const mockConsumer = require('../fixture/consumer');
 
-describe('Job Manager', () => {
+describe.only('Job Manager', () => {
   let jm;
 
   beforeEach(() => {
@@ -31,7 +31,7 @@ describe('Job Manager', () => {
   // });
 
   describe('#ADDJOB ', () => {
-    context.skip('with right options', () => {
+    context('with right options', () => {
       it('should return a correct job object with giving id', () => {
         const uid = uuid.v4();
         let jobId;
@@ -71,7 +71,7 @@ describe('Job Manager', () => {
     });
   });
 
-  describe.skip('#ADDTASKS ', () => {
+  describe('#ADDTASKS ', () => {
     const jobType = 'ADDTASKS';
 
     beforeEach(() => {
