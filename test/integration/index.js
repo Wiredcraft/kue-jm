@@ -1,8 +1,8 @@
 const expect = require('expect');
-const uuid = require('node-uuid');
+const uuid = require('uuid');
 const delay = require('delay');
 const JM = require('../../lib/jobManager');
-const config = require('../configWithSentinel');
+const config = require('../fixture/config').sentinel;
 
 describe.skip('Integration', () => {
   it('execute tasks sequentially for on job type', () => {

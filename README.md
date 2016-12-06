@@ -1,5 +1,5 @@
 # kue-jm
-[![Build Status](https://travis-ci.org/Wiredcraft/kue-jm.svg?branch=master)](https://travis-ci.org/ChopperLee2011/kue-jm)
+[![Build Status](https://travis-ci.org/Wiredcraft/kue-jm.svg?branch=dev)](https://travis-ci.org/Wiredcraft/kue-jm)
 
   a J(ob) M(anager) tool for handling tasks(sub job) sequentially in Kue.js
  
@@ -10,10 +10,10 @@
  `npm test`
 
 ## Examples
-   if you want see more detail information, please set `DEBUG=jm:*:*` ;
+   if you want see more detail information, please set `DEBUG=jm:*` ;
    
 
 ## TODO
- - [ ] implemented with event emitter.
+ - [X] implemented with event emitter.
  - [ ] support more job status query.
  - [ ] support more error handler.
