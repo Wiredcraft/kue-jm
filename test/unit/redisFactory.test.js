@@ -4,7 +4,7 @@ const expect = require('expect');
 const redisFactory = require('../../lib/redisFactory');
 const { normal, sentinel } = require('../fixture/config');
 
-describe.only('Redis Factory', () => {
+describe('Redis Factory', () => {
   describe('#JOB', () => {
     it('return a configured job queue instance with normal redis', () => {
       const job = redisFactory.job(normal);

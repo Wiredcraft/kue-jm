@@ -37,7 +37,7 @@
   "author": "Chopper Lee <lihengpro@gmail.com>",
   "license": "MIT",
   "engines": {
-    "node": ">=4.5.0"
+    "node": ">=6.3.0"
   },
   "repository": {
     "type": "git",
