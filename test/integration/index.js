@@ -4,7 +4,7 @@ const delay = require('delay');
 const JM = require('../../lib/jobManager');
 const config = require('../configWithSentinel');
 
-describe('Integration', () => {
+describe.skip('Integration', () => {
   it('execute tasks sequentially for on job type', () => {
     const jm = new JM(config);
     const uid = uuid.v4();

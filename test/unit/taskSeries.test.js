@@ -5,7 +5,7 @@ const sinon = require('sinon');
 const uuid = require('node-uuid');
 const JM = require('../../lib/jobManager');
 const Series = require('../../lib/taskSeries');
-const config = require('../configWithSentinel');
+const config = require('../config');
 
 describe('Task series', () => {
   let jm;
@@ -17,7 +17,7 @@ describe('Task series', () => {
     series = new Series();
   });
 
-  describe.skip('#EXECUTETASKS', () => {
+  describe('#EXECUTETASKS', () => {
     let tasks = [
       {
         name: 'ipsum',
@@ -40,11 +40,11 @@ describe('Task series', () => {
     beforeEach(() => {
       sandbox = sinon.sandbox.create();
       sandbox.stub(Series.prototype, 'execute').returns(Promise.resolve(true));
-      const jobType = `EXECUTETASKS ${i}`;
-      sid = uuid.v4();
-      return jm.addJob(jobType, { id: sid })
+      const jobType = `EXECUTETASKS${i}`;
+      const id = uuid.v4();
+      sid = `${jobType}:${id}`;
+      return jm.addJob(jobType, { id }, tasks)
         .then(() => {
-          jm.addTasks(jobType, tasks);
           return jm.run(jobType);
         })
         .then(() => {
@@ -56,7 +56,7 @@ describe('Task series', () => {
     afterEach(() => jm.job._db.flushdb());
 
     it('should execute the tasks sequentially', () => {
-      return series.execute(jm, sid, tasks)
+      return series.execute(jm, sid)
         .then(res => expect(res).toEqual('barqux'));
     });
 
