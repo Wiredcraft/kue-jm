@@ -3,6 +3,7 @@
 const expect = require('expect');
 const sinon = require('sinon');
 const uuid = require('uuid');
+const delay = require('delay');
 const JM = require('../../lib/jobManager');
 const Series = require('../../lib/taskSeries');
 const config = require('../fixture/config').normal;
@@ -14,7 +15,7 @@ describe('Task series', () => {
   before(() => {
     // todo: mock this.
     jm = new JM(config);
-    series = new Series();
+    series = new Series(jm);
   });
 
   describe('#EXECUTETASKS', () => {
@@ -37,22 +38,22 @@ describe('Task series', () => {
     let sid;
     let i = 0;
 
-    beforeEach(() => {
-      sandbox = sinon.sandbox.create();
-      sandbox.stub(Series.prototype, 'execute').returns(Promise.resolve(true));
-      const jobType = `EXECUTETASKS${i}`;
-      const id = uuid.v4();
-      sid = `${jobType}:${id}`;
-      return jm.addJob(jobType, { id }, tasks)
-        .then(() => {
-          return jm.run(jobType);
-        })
-        .then(() => {
-          i++;
-          return sandbox.restore();
-        });
-    });
-
+    // beforeEach(() => {
+    //   sandbox = sinon.sandbox.create();
+    //   sandbox.stub(Series.prototype, 'execute').returns(Promise.resolve(true));
+    //   const jobType = `EXECUTETASKS${i}`;
+    //   const id = uuid.v4();
+    //   sid = `${jobType}:${id}`;
+    //   return jm.addJob(jobType, { id }, tasks)
+    //     .then(() => {
+    //       return jm.run(jobType);
+    //     })
+    //     .then(() => {
+    //       i++;
+    //       return sandbox.restore();
+    //     });
+    // });
+    //
     afterEach(() => jm.job._db.flushdb());
 
     it('should execute the tasks sequentially', () => {
@@ -66,7 +67,7 @@ describe('Task series', () => {
         path: '../test/fixture/non-exist',
         param: { baz: 'qux' },
       });
-      return series.execute(jm, sid, tasks)
+      return series.execute(jm, sid)
         .catch((err) => {
           expect(err).toExist();
           jm.job._db.keys('*:?', (err, replies) => {
@@ -103,29 +104,35 @@ describe('Task series', () => {
         },
       ];
 
-      return series.execute(jm, sid, tasks)
+      return series.execute(jm, sid)
         .catch((err) => {
           expect(err).toExist();
         });
     });
 
-    // it('should execute rewind tasks when some error happened', () => {
-    //   tasks = [
-    //     {
-    //       name: 'failure1',
-    //       ttl: 5000,
-    //       retry: 4,
-    //       path: '../test/fixture/failTask',
-    //       param: { foo: 'bar' },
-    //       rewind: {
-    //         path: '../test/fixture/rewindTask'
-    //       }
-    //     }
-    //   ];
-    //   return series.executeTasks(jm, tasks, { rewind: true })
-    //     .then(res => {
-    //       expect(res).toEqual('-bar');
-    //     })
-    // });
+    it('should execute rewind tasks when some error happened', () => {
+      tasks = [
+        {
+          name: 'failure1',
+          ttl: 5000,
+          retry: 4,
+          path: '../test/fixture/failTask',
+          param: { foo: 'bar' },
+          rewind: {
+            path: '../test/fixture/rewindTask'
+          }
+        }
+      ];
+      const jobType = `EXECUTETASKS0`;
+      const id = uuid.v4();
+      sid = `${jobType}:${id}`;
+      return jm.addJob(jobType, { id }, tasks)
+        .then(() => delay(100))
+        .then(() => expect(true).toEqual('true'));
+      // return series.execute(jm, sid, { rewind: true })
+      //   .then(res => {
+      //     expect(res).toEqual('-bar');
+      //   })
+    });
   });
 });

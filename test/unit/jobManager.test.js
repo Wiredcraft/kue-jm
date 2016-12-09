@@ -205,7 +205,7 @@ describe('Job Manager', () => {
     context('process with different task number', () => {
       it('should return null with zero task', () => {
         tasks.length = 0;
-        jm.addTasks(jobType, tasks);
+        // jm.addTasks(jobType, tasks);
         return jm.run(jobType)
           .then((res) => {
             expect(res).toEqual(null);
