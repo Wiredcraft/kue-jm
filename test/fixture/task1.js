@@ -1,5 +1,5 @@
 module.exports = (param, previousResult, callback) => {
   setTimeout(() => {
-    callback(null, JSON.parse(param).foo);
+    callback(null, param.foo);
   }, 50);
 };
