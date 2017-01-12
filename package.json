@@ -1,6 +1,6 @@
 {
   "name": "kue-jm",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "a job manager tool for handling sub jobs sequentially in Kue.js",
   "main": "index.js",
   "directories": {
@@ -40,10 +40,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ChopperLee2011/kue-jm.git"
+    "url": "git+https://github.com/Wiredcraft/kue-jm.git"
   },
   "bugs": {
-    "url": "https://github.com/ChopperLee2011/kue-jm/issues"
+    "url": "https://github.com/Wiredcraft/kue-jm/issues"
   },
-  "homepage": "https://github.com/ChopperLee2011/kue-jm#readme"
+  "homepage": "https://github.com/Wiredcraft/kue-jm#readme"
 }
