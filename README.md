@@ -8,6 +8,12 @@
  `npm i`
  
  `npm test`
+ 
+## Feature
+ - Base on Kue.js
+ - Support redis sentinel
+ - Allow parent-child task design
+ - Auto revert tasks to clean side efforts
 
 ## Examples
    if you want see more detail information, please set `DEBUG=jm:*` ;
