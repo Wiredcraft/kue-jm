@@ -2,13 +2,13 @@ const expect = require('expect');
 const uuid = require('uuid');
 const delay = require('delay');
 const JM = require('../../lib/jobManager');
-const config = require('../fixture/config').normal;
+const config = require('../fixture/config').sentinel;
 
-describe.only('Integration', () => {
+describe('Integration', () => {
   it('execute tasks sequentially for on job type', () => {
     const jm = new JM(config);
     const uid = uuid.v4();
-    const jobType = 'integratoin1';
+    const jobType = 'integratoin';
     const tasks = [
       {
         name: 'ipsum',
@@ -30,7 +30,7 @@ describe.only('Integration', () => {
         return jm.run(jobType);
       })
       .then((res) => {
-        expect(res).toEqual(`${jobType}:${uid}`);
+        expect(res).toEqual(`integratoin:${uid}`);
         return delay(1000);
       })
       .then(() => {
