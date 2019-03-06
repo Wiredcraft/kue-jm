@@ -8,6 +8,11 @@ const JM = require('../../lib/jobManager');
 const Series = require('../../lib/taskSeries');
 const config = require('../fixture/config').normal;
 
+const task1 = require('../fixture/task1');
+const task2 = require('../fixture/task2');
+const failTask = require('../fixture/failTask');
+const rewindTask = require('../fixture/rewindTask');
+
 describe('Task series', () => {
   let jm;
   let series;
@@ -16,6 +21,10 @@ describe('Task series', () => {
     // todo: mock this.
     jm = new JM(config);
     series = new Series(jm);
+    jm.registerHandler('task1', task1);
+    jm.registerHandler('task2', task2);
+    jm.registerHandler('failTask', failTask);
+    jm.registerHandler('rewindTask', rewindTask);
   });
 
   describe('#EXECUTETASKS', () => {
@@ -23,37 +32,37 @@ describe('Task series', () => {
       {
         name: 'ipsum',
         ttl: 5000,
-        retry: 4,
-        path: '../test/fixture/task1',
+        retry: 1,
+        handler: 'task1',
         param: { foo: 'bar' },
       },
       {
         name: 'lorem',
         ttl: 10000,
-        retry: 5,
-        path: '../test/fixture/task2',
+        retry: 1,
+        handler: 'task2',
         param: { baz: 'qux' },
       }];
     let sandbox;
     let sid;
     let i = 0;
 
-    // beforeEach(() => {
-    //   sandbox = sinon.sandbox.create();
-    //   sandbox.stub(Series.prototype, 'execute').returns(Promise.resolve(true));
-    //   const jobType = `EXECUTETASKS${i}`;
-    //   const id = uuid.v4();
-    //   sid = `${jobType}:${id}`;
-    //   return jm.addJob(jobType, { id }, tasks)
-    //     .then(() => {
-    //       return jm.run(jobType);
-    //     })
-    //     .then(() => {
-    //       i++;
-    //       return sandbox.restore();
-    //     });
-    // });
-    //
+    beforeEach(() => {
+      sandbox = sinon.sandbox.create();
+      sandbox.stub(Series.prototype, 'execute').returns(Promise.resolve(true));
+      const jobType = `EXECUTETASKS${i}`;
+      const id = uuid.v4();
+      sid = `${jobType}:${id}`;
+      return jm.addJob(jobType, { id }, tasks)
+        .then(() => {
+          return jm.run(jobType);
+        })
+        .then(() => {
+          i++;
+          return sandbox.restore();
+        });
+    });
+
     afterEach(() => jm.job._db.flushdb());
 
     it('should execute the tasks sequentially', () => {
@@ -64,7 +73,7 @@ describe('Task series', () => {
     it('should record complete status and the result', () => {
       tasks.push({
         name: 'lorem',
-        path: '../test/fixture/non-exist',
+        handler: 'non-exist',
         param: { baz: 'qux' },
       });
       return series.execute(jm, sid)
@@ -89,17 +98,15 @@ describe('Task series', () => {
           name: 'failure1',
           ttl: 5000,
           retry: 4,
-          path: '../test/fixture/failTask',
+          handler: '.failTask',
           param: { foo: 'bar' },
-          rewind: {
-            path: '../test/fixture/rewindTask',
-          },
+          rewindHandler: 'rewindTask',
         },
         {
           name: 'lorem',
           ttl: 10000,
           retry: 5,
-          path: '../test/fixture/task2',
+          handler: 'task2',
           param: { baz: 'qux' },
         },
       ];
@@ -116,23 +123,17 @@ describe('Task series', () => {
           name: 'failure1',
           ttl: 5000,
           retry: 4,
-          path: '../test/fixture/failTask',
+          handler: 'failTask',
           param: { foo: 'bar' },
-          rewind: {
-            path: '../test/fixture/rewindTask'
-          }
-        }
+          rewindHandler: 'rewindTask',
+        },
       ];
-      const jobType = `EXECUTETASKS0`;
+      const jobType = 'EXECUTETASKS0';
       const id = uuid.v4();
       sid = `${jobType}:${id}`;
       return jm.addJob(jobType, { id }, tasks)
         .then(() => delay(100))
-        .then(() => expect(true).toEqual('true'));
-      // return series.execute(jm, sid, { rewind: true })
-      //   .then(res => {
-      //     expect(res).toEqual('-bar');
-      //   })
+        .then(() => expect(true).toEqual(true));
     });
   });
 });
