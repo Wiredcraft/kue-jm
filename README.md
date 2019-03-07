@@ -1,5 +1,5 @@
 # kue-jm
-[![Build Status](https://travis-ci.org/Wiredcraft/kue-jm.svg)](https://travis-ci.org/Wiredcraft/kue-jm)
+[![Build Status](https://travis-ci.org/Wiredcraft/kue-jm.svg?branch=master)](https://travis-ci.org/Wiredcraft/kue-jm)
 
   a J(ob) M(anager) tool for handling tasks(sub job) sequentially in Kue.js
  
