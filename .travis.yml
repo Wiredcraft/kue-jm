@@ -1,15 +1,8 @@
 language: node_js
 service:
     - redis-server
-addons:
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - g++-4.8
 env:
   global:
-  - CXX=g++-4.8
   - REDIS_SENTINEL_JQ='127.0.0.1:26379'
   - REDIS_SENTINEL_NAME_JQ='jobqueue01'
 cache:
@@ -20,7 +13,6 @@ node_js:
 before_script:
   - redis-server /etc/redis/redis.conf --port 6379
   - bash ./deploy/setupSentinel.sh
-  - npm prune
 install:
   - npm install
 script:
