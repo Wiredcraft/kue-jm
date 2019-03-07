@@ -2,7 +2,7 @@ const expect = require('expect');
 const uuid = require('uuid');
 const delay = require('delay');
 const JM = require('../../lib/jobManager');
-const config = require('../fixture/config').normal;
+const config = require('../fixture/config').sentinel;
 
 const task1 = require('../fixture/task1');
 const task2 = require('../fixture/task2');

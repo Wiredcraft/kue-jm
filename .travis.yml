@@ -1,24 +1,23 @@
+sudo: required
+
 language: node_js
-addons:
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - g++-4.8
+node_js:
+  - "6.3"
+  
+service:
+    - redis-server
 env:
   global:
-  - CXX=g++-4.8
   - REDIS_SENTINEL_JQ='127.0.0.1:26379'
   - REDIS_SENTINEL_NAME_JQ='jobqueue01'
 cache:
   directories:
     - node_modules
-node_js:
-  - "6.3"
+
 before_script:
-  - redis-server /etc/redis/redis.conf --port 6379
+  - sudo service redis-server start
+  - sleep 10
   - bash ./deploy/setupSentinel.sh
-  - npm prune
 install:
   - npm install
 script:
