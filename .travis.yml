@@ -1,4 +1,6 @@
 language: node_js
+service:
+    - redis-server
 addons:
   apt:
     sources:
@@ -16,7 +18,7 @@ cache:
 node_js:
   - "6.3"
 before_script:
-  - redis-server --port 6379 --daemonize yes
+  - redis-server /etc/redis/redis.conf --port 6379
   - bash ./deploy/setupSentinel.sh
   - npm prune
 install:
