@@ -1,4 +1,9 @@
+sudo: required
+
 language: node_js
+node_js:
+  - "6.3"
+  
 service:
     - redis-server
 env:
@@ -8,10 +13,10 @@ env:
 cache:
   directories:
     - node_modules
-node_js:
-  - "6.3"
+
 before_script:
-  - redis-server /etc/redis/redis.conf --port 6379
+  - sudo service redis-server start
+  - sleep 10
   - bash ./deploy/setupSentinel.sh
 install:
   - npm install
