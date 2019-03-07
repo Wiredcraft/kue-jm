@@ -16,7 +16,7 @@ cache:
 node_js:
   - "6.3"
 before_script:
-  - redis-server /etc/redis/redis.conf --port 6379
+  - redis-server --port 6379
   - bash ./deploy/setupSentinel.sh
   - npm prune
 install:
