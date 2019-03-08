@@ -4,6 +4,11 @@ const delay = require('delay');
 const JM = require('../../lib/jobManager');
 const config = require('../fixture/config').sentinel;
 
+const task1 = require('../fixture/task1');
+const task2 = require('../fixture/task2');
+const failTask = require('../fixture/failTask');
+const rewindTask = require('../fixture/rewindTask');
+
 describe('Integration', () => {
   it('execute tasks sequentially for on job type', () => {
     const jm = new JM(config);
@@ -14,17 +19,20 @@ describe('Integration', () => {
         name: 'ipsum',
         ttl: 5000,
         retry: 4,
-        path: '../test/fixture/task1',
+        handler: 'task1',
         param: { foo: 'bar' },
       },
       {
         name: 'lorem',
         ttl: 10000,
         retry: 5,
-        path: '../test/fixture/task2',
+        handler: 'task2',
         param: { baz: 'qux' },
       },
     ];
+    jm.registerHandler('task1', task1);
+    jm.registerHandler('task2', task2);
+
     return jm.addJob(jobType, { id: uid }, tasks)
       .then(() => {
         return jm.run(jobType);
@@ -50,24 +58,29 @@ describe('Integration', () => {
         name: 'ipsum',
         ttl: 5000,
         retry: 1,
-        path: '../test/fixture/task1',
+        handler: 'task1',
         param: { foo: 'bar' },
       },
       {
         name: 'failure',
         ttl: 5000,
         retry: 1,
-        path: '../test/fixture/failTask',
+        handler: 'failTask',
         param: { baz: 'qux' },
       },
       {
         name: 'lorem',
         ttl: 10000,
         retry: 1,
-        path: '../test/fixture/task2',
+        handler: 'task2',
         param: { baz: 'qux' },
       },
     ];
+
+    jm.registerHandler('task1', task1);
+    jm.registerHandler('task2', task2);
+    jm.registerHandler('failTask', failTask);
+
     return jm.addJob(jobType, { id: uid }, tasks)
       .then(() => {
         return jm.run(jobType);
@@ -93,25 +106,31 @@ describe('Integration', () => {
         name: 'failure',
         ttl: 5000,
         retry: 1,
-        path: '../test/fixture/failTask',
-        rewindPath: '../test/fixture/rewindTask',
+        handler: 'failTask',
+        rewindHandler: 'rewindTask',
         param: { baz: 'qux' },
       },
       {
         name: 'ipsum',
         ttl: 5000,
         retry: 1,
-        path: '../test/fixture/task1',
+        handler: 'task1',
         param: { foo: 'bar' },
       },
       {
         name: 'lorem',
         ttl: 10000,
         retry: 1,
-        path: '../test/fixture/task2',
+        handler: 'task2',
         param: { baz: 'qux' },
       },
     ];
+
+    jm.registerHandler('task1', task1);
+    jm.registerHandler('task2', task2);
+    jm.registerHandler('failTask', failTask);
+    jm.registerHandler('rewindTask', rewindTask);
+
     return jm.addJob(jobType, { id: uid }, tasks)
       .then(() => {
         return jm.run(jobType);
