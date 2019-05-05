@@ -1,6 +1,6 @@
 {
   "name": "kue-jm",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "a job manager tool for handling sub jobs sequentially in Kue.js",
   "main": "index.js",
   "directories": {
