@@ -7,6 +7,7 @@ exports.normal = {
   redisDBForJob: 1,
   redisDBForTask: 0,
   debug: false,
+  redisPassword: 'foobared'
 };
 
 exports.sentinel = {
@@ -16,4 +17,5 @@ exports.sentinel = {
   redisDBForTask: 0,
   redisDBForJob: 1,
   debug: false,
+  redisPassword: 'foobared'
 };
